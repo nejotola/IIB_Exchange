@@ -1,0 +1,52 @@
+
+
+CREATE COMPUTE MODULE LOOPService_Compute
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		--CALL CopyMessageHeaders();
+		 CALL CopyEntireMessage();
+		 DECLARE I INTEGER 1;
+		DECLARE J INTEGER;
+		DECLARE vPercent FLOAT;
+		SET J = CARDINALITY(InputRoot.XMLNSC.Students.*[]);
+		WHILE I <= J DO
+			SET vPercent= CAST(InputRoot.XMLNSC.Students.Student[I].Percentage AS FLOAT);
+			IF vPercent >90  THEN
+        SET OutputRoot.XMLNSC.Employees.Employee[I].Status = 'GREAT_DITINICTION';
+			ELSEIF vPercent >=80 AND vPercent <90  THEN
+        SET OutputRoot.XMLNSC.Employees.Employee[I].Status = 'DITINICTION';
+			ELSEIF  vPercent <80 AND vPercent >75 THEN
+	    SET OutputRoot.XMLNSC.Employees.Employee[I].Status ='EXCELLENT';
+	        ELSEIF  vPercent >60 AND vPercent <75 THEN
+	    SET OutputRoot.XMLNSC.Employees.Employee[I].Status ='VERYGOOD';
+   END IF;
+
+			--SET OutputRoot.XMLNSC.Employees.Employee[I] = InputRoot.XMLNSC.Students.Student[I];
+SET OutputRoot.XMLNSC.Employees.Employee[I].FullName = InputRoot.XMLNSC.Students.Student[I].FirstName||' '||InputRoot.XMLNSC.Students.Student[I].LastName;
+SET OutputRoot.XMLNSC.Employees.Employee[I].GuyyaaDhalootaa = InputRoot.XMLNSC.Students.Student[I].DOB;
+SET OutputRoot.XMLNSC.Employees.Employee[I].Gender = InputRoot.XMLNSC.Students.Student[I].Sex;
+SET OutputRoot.XMLNSC.Employees.Employee[I].EmpID = InputRoot.XMLNSC.Students.Student[I].ID;
+SET OutputRoot.XMLNSC.Employees.Employee[I].Subject = InputRoot.XMLNSC.Students.Student[I].Course;
+SET OutputRoot.XMLNSC.Employees.Employee[I].Contact.Phone = InputRoot.XMLNSC.Students.Student[I].Phone;
+SET OutputRoot.XMLNSC.Employees.Employee[I].Contact.Email = InputRoot.XMLNSC.Students.Student[I].Email;
+SET OutputRoot.XMLNSC.Employees.Employee[I].Percentage = InputRoot.XMLNSC.Students.Student[I].Percentage;
+			SET I = I + 1;
+		END WHILE;
+		
+		RETURN TRUE;
+	END;
+
+	CREATE PROCEDURE CopyMessageHeaders() BEGIN
+		DECLARE I INTEGER 1;
+		DECLARE J INTEGER;
+		SET J = CARDINALITY(InputRoot.XMLNSC.Students.*[]);
+		WHILE I <= J DO
+			SET OutputRoot.XMLNSC.Employees.Employee.*[I] = InputRoot.XMLNSC.Students.*[I];
+			SET I = I + 1;
+		END WHILE;
+	END;
+
+	CREATE PROCEDURE CopyEntireMessage() BEGIN
+--		SET OutputRoot = InputRoot;
+	END;
+END MODULE;
