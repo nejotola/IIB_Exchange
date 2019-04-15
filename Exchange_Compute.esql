@@ -5,8 +5,7 @@ CREATE COMPUTE MODULE Exchange_Compute
 	BEGIN
 	    CALL CopyMessageHeaders();
 		
-		-- CALL CopyEntireMessage();
-		
+				
 		
 			--DECLARE MyQarshi INTEGER ;
 			
